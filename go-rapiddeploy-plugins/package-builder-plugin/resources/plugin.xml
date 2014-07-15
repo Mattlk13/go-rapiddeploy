@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="rapiddeploy.package.build.plugin" version="1">
+    <about>
+        <name>RapidDeploy Package Task Plugin</name>
+        <version>1.0</version>
+        <target-go-version>14.1.0</target-go-version>
+        <description>
+           Task plugin that supports invoking a package build operation on a remote RapidDeploy server
+        </description>
+        <vendor>
+            <name>MidVision</name>
+            <url>www.midvision.com</url>
+        </vendor>
+    </about>
+</go-plugin>

@@ -1,0 +1,24 @@
+<div class="form_item_block">
+  <label>RapidDeploy server URL:<span class="asterisk">*</span>
+  </label>
+  <input type="url" ng-model="Url" ng-required="true">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[Url].$error.url">Incorrect url format.</span>
+  <span class="form_error" ng-show="GOINPUTNAME[Url].$error.server">{{ GOINPUTNAME[Url].$error.server }}</span>
+</div>
+<div class="form_item_block">
+  <label>Authentication token:<span class="asterisk">*</span>
+  </label>
+  <input type="password" ng-model="Token" ng-required="true">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[Token].$error.token">Incorrect token format.</span>
+  <span class="form_error" ng-show="GOINPUTNAME[Token].$error.server">{{ GOINPUTNAME[Token].$error.server }}</span>
+</div>
+<div class="form_item_block">
+  <label>Project name:<span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="Project" ng-required="true">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[Project].$error.token">Incorrect project name format.</span>
+  <span class="form_error" ng-show="GOINPUTNAME[Project].$error.server">{{ GOINPUTNAME[Project].$error.server }}</span>
+</div>
