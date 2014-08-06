@@ -75,7 +75,21 @@ public class RapidDeployPackageMaterialPoller implements PackageMaterialPoller{
 	public PackageRevision latestModificationSince(PackageConfiguration packageConfiguration,
 			RepositoryConfiguration repositoryConfiguration, PackageRevision packageRevision) {
 		
-		return packageRevision;
+		String latestPackageName = null;
+		
+		try {
+			latestPackageName = getLatestPackageNameFromRepo(packageConfiguration, repositoryConfiguration);
+			String originalPackageName = packageRevision.getRevision();
+			//check if package version is higher - compare
+			if(new NaturalOrderComparator().compare(latestPackageName, originalPackageName)>0){
+				return new PackageRevision(latestPackageName, new Date(), "");
+			} else{
+				return packageRevision;
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+			return null;
+		}	
 	}
 	
 	private List<String> getProjectPackages(RepositoryConfiguration repositoryConfiguration) throws Exception{
