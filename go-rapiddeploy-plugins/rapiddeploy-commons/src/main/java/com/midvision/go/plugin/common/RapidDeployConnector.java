@@ -78,7 +78,9 @@ public class RapidDeployConnector {
 		url.append(projectName).append("/runjob/deploy/");
 		url.append(server).append("/");
 		url.append(environment).append("/");
-		url.append(instance).append("/");
+		if (instance != null && !"".equals(instance)) {
+		    url.append(instance).append("/");
+		}
 		url.append(application);
 		url.append("?returnLogFile=true");
 		if (packageName != null && !"".equals(packageName)
@@ -223,7 +225,7 @@ public class RapidDeployConnector {
 		String jobStatus = null;
 		List<String> responseData = extractTagValueFromXml(responseOutput, "span");
 		for(int i=0; i< responseData.size(); i++){
-			if(responseData.get(i).equals("Display Details Job Status") && responseData.size() >= (i+1)){
+			if(responseData.get(i).contains("Job Status") && responseData.size() >= (i+1)){
 				jobStatus = responseData.get(i+1);
 			}
 		}
@@ -234,7 +236,7 @@ public class RapidDeployConnector {
 		String jobId = null;
 		List<String> responseData = extractTagValueFromXml(responseOutput, "span");
 		for(int i=0; i< responseData.size(); i++){
-			if(responseData.get(i).equals("Deployment Job ID") && responseData.size() >= (i+1)){
+			if(responseData.get(i).contains("Job ID") && responseData.size() >= (i+1)){
 				jobId = responseData.get(i+1);
 			}
 		}
