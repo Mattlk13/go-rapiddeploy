@@ -6,8 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.midvision.go.plugin.common.RapidDeployConnector;
-import com.midvision.rapiddeploy.utilities.bean.NaturalOrderComparator;
-import com.thoughtworks.go.plugin.api.config.Property;
+import com.midvision.go.plugin.util.NaturalOrderComparator;
 import com.thoughtworks.go.plugin.api.material.packagerepository.PackageConfiguration;
 import com.thoughtworks.go.plugin.api.material.packagerepository.PackageMaterialPoller;
 import com.thoughtworks.go.plugin.api.material.packagerepository.PackageRevision;

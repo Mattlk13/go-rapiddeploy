@@ -1,4 +1,4 @@
-package com.midvision.rapiddeploy.utilities.bean;
+package com.midvision.go.plugin.util;
 
 
 import java.util.Comparator;
