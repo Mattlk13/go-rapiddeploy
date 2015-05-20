@@ -18,9 +18,12 @@ package com.midvision.go.task.jobrunner;
 
 import java.util.Map;
 
+import com.midvision.rapiddeploy.connector.RapidDeployConnector;
 import com.thoughtworks.go.plugin.api.response.execution.ExecutionResult;
-import com.thoughtworks.go.plugin.api.task.*;
-import com.midvision.go.plugin.common.RapidDeployConnector;
+import com.thoughtworks.go.plugin.api.task.Console;
+import com.thoughtworks.go.plugin.api.task.TaskConfig;
+import com.thoughtworks.go.plugin.api.task.TaskExecutionContext;
+import com.thoughtworks.go.plugin.api.task.TaskExecutor;
 
 public class RapidDeployJobTaskExecutor implements TaskExecutor {
 
@@ -65,19 +68,7 @@ public class RapidDeployJobTaskExecutor implements TaskExecutor {
     		console.printLine("Found deployment package name: " + deploymentPackageName);
     	}
     	
-        String[] envObjects = environment.split("\\.");
-		String output;
-		if(environment.contains(".") && envObjects.length == 4){					
-			output = RapidDeployConnector.invokeRapidDeployDeployment(token, url, project, envObjects[0], envObjects[1], envObjects[2], envObjects[3], deploymentPackageName);				
-		} else if(environment.contains(".") && envObjects.length == 3){
-			//support for RD v3.5+ - instance removed
-			output = RapidDeployConnector.invokeRapidDeployDeployment(token, url, project, envObjects[0], envObjects[1], null, envObjects[2], deploymentPackageName);				
-		} else{
-			console.printLine("Exception: Invalid environment settings found! " + environment);
-			throw new Exception("Invalid environment settings found!");
-		}
-		console.printLine("RapidDeploy job has successfully started!");
-			
+		String output = RapidDeployConnector.invokeRapidDeployDeploymentPollOutput(token, url, project, environment, deploymentPackageName, true);
 		
 		String jobId = RapidDeployConnector.extractJobId(output);
 		if(jobId != null){

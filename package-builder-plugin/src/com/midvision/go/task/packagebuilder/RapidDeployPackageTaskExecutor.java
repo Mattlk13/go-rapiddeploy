@@ -16,11 +16,12 @@
 
 package com.midvision.go.task.packagebuilder;
 
-import java.util.Map;
-
-import com.midvision.go.plugin.common.RapidDeployConnector;
+import com.midvision.rapiddeploy.connector.RapidDeployConnector;
 import com.thoughtworks.go.plugin.api.response.execution.ExecutionResult;
-import com.thoughtworks.go.plugin.api.task.*;
+import com.thoughtworks.go.plugin.api.task.Console;
+import com.thoughtworks.go.plugin.api.task.TaskConfig;
+import com.thoughtworks.go.plugin.api.task.TaskExecutionContext;
+import com.thoughtworks.go.plugin.api.task.TaskExecutor;
 
 
 public class RapidDeployPackageTaskExecutor implements TaskExecutor {
@@ -47,7 +48,7 @@ public class RapidDeployPackageTaskExecutor implements TaskExecutor {
     	console.printLine("Project name: " + project);    	    	
     	
     	String output;
-    	output = RapidDeployConnector.invokeRapidDeployBuildPackage(token, url, project, null, "jar");
+    	output = RapidDeployConnector.invokeRapidDeployBuildPackage(token, url, project, null, "jar", true);
     	console.printLine("Package build finished successfully, with output:\n " + output);
         return ExecutionResult.success("Successfully built RapidDeploy package. Please check the output.");
     }  

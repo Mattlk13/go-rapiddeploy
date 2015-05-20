@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import com.midvision.go.plugin.common.RapidDeployConnector;
-import com.midvision.go.plugin.util.NaturalOrderComparator;
+import com.midvision.rapiddeploy.connector.RapidDeployConnector;
 import com.thoughtworks.go.plugin.api.material.packagerepository.PackageConfiguration;
 import com.thoughtworks.go.plugin.api.material.packagerepository.PackageMaterialPoller;
 import com.thoughtworks.go.plugin.api.material.packagerepository.PackageRevision;
 import com.thoughtworks.go.plugin.api.material.packagerepository.RepositoryConfiguration;
 import com.thoughtworks.go.plugin.api.response.Result;
+import com.tw.go.plugin.packagematerial.utils.NaturalOrderComparator;
 
 public class RapidDeployPackageMaterialPoller implements PackageMaterialPoller{
 
