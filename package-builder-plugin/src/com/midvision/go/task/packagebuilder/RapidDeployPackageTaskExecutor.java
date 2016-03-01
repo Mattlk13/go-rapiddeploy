@@ -43,7 +43,7 @@ public class RapidDeployPackageTaskExecutor implements TaskExecutor {
     	Console console = taskContext.console();
         
     	console.printLine("Starting RapidDeploy package build with parameters:");
-    	console.printLine("Url: " + url);
+    	console.printLine("URL: " + url);
     	console.printLine("Authentication token: ******");
     	console.printLine("Project name: " + project);    	    	
     	

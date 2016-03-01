@@ -27,94 +27,95 @@ import com.thoughtworks.go.plugin.api.task.TaskExecutor;
 
 public class RapidDeployJobTaskExecutor implements TaskExecutor {
 
-    @Override
-    public ExecutionResult execute(TaskConfig config, TaskExecutionContext taskEnvironment) {
-        try {
-            return runCommand(taskEnvironment, config);
-        } catch (Exception e) {
-            return ExecutionResult.failure("Failed to invoke RapidDeploy job on URL: " + config.getValue(RapidDeployJobTask.URL_PROPERTY) + " \nError message: " + e.getMessage(), e);
-        }
-    }
+	@Override
+	public ExecutionResult execute(TaskConfig config, TaskExecutionContext taskEnvironment) {
+		try {
+			return runCommand(taskEnvironment, config);
+		} catch (Exception e) {
+			return ExecutionResult.failure("Failed to invoke RapidDeploy job on URL: " + config.getValue(RapidDeployJobTask.URL_PROPERTY)
+					+ " \nError message: " + e.getMessage(), e);
+		}
+	}
 
-    private ExecutionResult runCommand(TaskExecutionContext taskContext, TaskConfig taskConfig) throws Exception {    	
-        String url = taskConfig.getValue(RapidDeployJobTask.URL_PROPERTY);
-        String token = taskConfig.getValue(RapidDeployJobTask.TOKEN_PROPERTY);
-        String project = taskConfig.getValue(RapidDeployJobTask.PROJECT_PROPERTY);
-        String environment = taskConfig.getValue(RapidDeployJobTask.ENVIRONMENT_PROPERTY);
-        String packageRepoName = taskConfig.getValue(RapidDeployJobTask.PACKAGE_REPO_PROPERTY);
-        String packageName = taskConfig.getValue(RapidDeployJobTask.PACKAGE_PROPERTY);
-    	
-    	Console console = taskContext.console();
-    	boolean success = true;
-        
-    	console.printLine("Starting RapidDeploy job with parameters:");
-    	console.printLine("Url: " + url);
-    	console.printLine("Authentication token: ******");
-    	console.printLine("Project name: " + project);
-    	console.printLine("Environment name: " + environment);
-    	console.printLine("Package repository name: " + packageRepoName);
-    	console.printLine("Package name: " + packageName);
-    	
-    	String deploymentPackageNameKey = "GO_PACKAGE_" + packageRepoName.toUpperCase() + "_" + packageName.toUpperCase() + "_LABEL";
-    	
-    	console.printLine("Looking up selected package material artefact in environment variables with key '" + deploymentPackageNameKey + "'");    	
-    	  	    	    	
-    	Map<String,String> envMap = taskContext.environment().asMap();
-    	String deploymentPackageName = envMap.get(deploymentPackageNameKey);
-    	
-    	if(deploymentPackageName == null || "".equals(deploymentPackageName)){
-    		return ExecutionResult.failure("Could not find deployment package!\nPlease check if the package repository and package name matches with the configuration of the package material plugin.");
-    	} else{
-    		console.printLine("Found deployment package name: " + deploymentPackageName);
-    	}
-    	
-		String output = RapidDeployConnector.invokeRapidDeployDeploymentPollOutput(token, url, project, environment, deploymentPackageName, true);
-		
+	private ExecutionResult runCommand(TaskExecutionContext taskContext, TaskConfig taskConfig) throws Exception {
+		String url = taskConfig.getValue(RapidDeployJobTask.URL_PROPERTY);
+		String token = taskConfig.getValue(RapidDeployJobTask.TOKEN_PROPERTY);
+		String project = taskConfig.getValue(RapidDeployJobTask.PROJECT_PROPERTY);
+		String environment = taskConfig.getValue(RapidDeployJobTask.ENVIRONMENT_PROPERTY);
+		String packageRepoName = taskConfig.getValue(RapidDeployJobTask.PACKAGE_REPO_PROPERTY);
+		String packageName = taskConfig.getValue(RapidDeployJobTask.PACKAGE_PROPERTY);
+
+		Console console = taskContext.console();
+		boolean success = true;
+
+		console.printLine("Starting RapidDeploy job with parameters:");
+		console.printLine("URL: " + url);
+		console.printLine("Authentication token: ******");
+		console.printLine("Project name: " + project);
+		console.printLine("Environment name: " + environment);
+		console.printLine("Package repository name: " + packageRepoName);
+		console.printLine("Package name: " + packageName);
+
+		String deploymentPackageNameKey = String.format("GO_PACKAGE_%s_LABEL", packageRepoName + ":" + packageName).replaceAll("[^A-Za-z0-9_]", "_")
+				.toUpperCase();
+
+		console.printLine("Looking up selected package material artefact in environment variables with key '" + deploymentPackageNameKey + "'");
+
+		Map<String, String> envMap = taskContext.environment().asMap();
+		String deploymentPackageName = envMap.get(deploymentPackageNameKey);
+
+		if (deploymentPackageName == null || "".equals(deploymentPackageName)) {
+			return ExecutionResult.failure("Could not find deployment package!\n"
+					+ "Please check if the package repository and package name matches with the configuration of the package material plugin.");
+		} else {
+			console.printLine("Found deployment package name: " + deploymentPackageName);
+		}
+
+		String output = RapidDeployConnector.invokeRapidDeployDeploymentPollOutput(token, url, project, environment, deploymentPackageName, false, true);
+
 		String jobId = RapidDeployConnector.extractJobId(output);
-		if(jobId != null){
-			console.printLine("Checking job status in every 30 seconds...");
+		if (jobId != null) {
+			console.printLine("Checking job status every 30 seconds...");
 			boolean runningJob = true;
-			//sleep 30sec by default
+			// sleep 30sec by default
 			long milisToSleep = 30000;
-			while(runningJob){
+			while (runningJob) {
 				Thread.sleep(milisToSleep);
 				String jobDetails = RapidDeployConnector.pollRapidDeployJobDetails(token, url, jobId);
 				String jobStatus = RapidDeployConnector.extractJobStatus(jobDetails);
-				
+
 				console.printLine("Job status is " + jobStatus);
-				if(jobStatus.equals("DEPLOYING") || jobStatus.equals("QUEUED") || 
-						jobStatus.equals("STARTING") || jobStatus.equals("EXECUTING")){														
-					console.printLine("Job is running, next check in 30 seconds..");
+				if (jobStatus.equals("DEPLOYING") || jobStatus.equals("QUEUED") || jobStatus.equals("STARTING") || jobStatus.equals("EXECUTING")) {
+					console.printLine("Job running, next check in 30 seconds...");
 					milisToSleep = 30000;
-				} else if(jobStatus.equals("REQUESTED") || jobStatus.equals("REQUESTED_SCHEDULED")){
-					console.printLine("Job is in a REQUESTED state. Approval may be required in RapidDeploy to continue with execution, next check in 30 seconds..");
-				} else if(jobStatus.equals("SCHEDULED")){
-					console.printLine("Job is in a SCHEDULED state, execution will start in a future date, next check in 5 minutes..");
-					console.printLine("Printing out job details");
+				} else if (jobStatus.equals("REQUESTED") || jobStatus.equals("REQUESTED_SCHEDULED")) {
+					console.printLine("Job in a REQUESTED state. Approval may be required in RapidDeploy to continue with the execution, next check in 30 seconds...");
+				} else if (jobStatus.equals("SCHEDULED")) {
+					console.printLine("Job in a SCHEDULED state, execution will start in a future date, next check in 5 minutes...");
+					console.printLine("Printing out job details:");
 					console.printLine(jobDetails);
 					milisToSleep = 300000;
-				} else{
-				
+				} else {
+
 					runningJob = false;
-					console.printLine("Job is finished with status " + jobStatus);
-					if(jobStatus.equals("FAILED") || jobStatus.equals("REJECTED") || 
-							jobStatus.equals("CANCELLED") || jobStatus.equals("UNEXECUTABLE") || 
-							jobStatus.equals("TIMEDOUT") || jobStatus.equals("UNKNOWN")){
+					console.printLine("Job finished with status " + jobStatus);
+					if (jobStatus.equals("FAILED") || jobStatus.equals("REJECTED") || jobStatus.equals("CANCELLED") || jobStatus.equals("UNEXECUTABLE")
+							|| jobStatus.equals("TIMEDOUT") || jobStatus.equals("UNKNOWN")) {
 						success = false;
 					}
 				}
 			}
-		} else{
+		} else {
 			throw new Exception("Could not retrieve job id, running asynchronously!");
 		}
 		console.printLine("");
 		String logs = RapidDeployConnector.pollRapidDeployJobLog(token, url, jobId);
-		console.printLine(logs); 	        
-                
-        if (!success) {
-            return ExecutionResult.failure("Failed to run RapidDeploy job. Please check the output.");
-        }
+		console.printLine(logs);
 
-        return ExecutionResult.success("Successfully ran RapidDeploy job. Please check the output.");
-    }  
+		if (!success) {
+			return ExecutionResult.failure("Failed to run RapidDeploy job. Please check the output.");
+		}
+
+		return ExecutionResult.success("Successfully ran RapidDeploy job. Please check the output.");
+	}
 }
