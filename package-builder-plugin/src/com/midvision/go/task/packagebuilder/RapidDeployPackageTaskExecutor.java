@@ -23,33 +23,32 @@ import com.thoughtworks.go.plugin.api.task.TaskConfig;
 import com.thoughtworks.go.plugin.api.task.TaskExecutionContext;
 import com.thoughtworks.go.plugin.api.task.TaskExecutor;
 
-
 public class RapidDeployPackageTaskExecutor implements TaskExecutor {
 
-    @Override
-    public ExecutionResult execute(TaskConfig config, TaskExecutionContext taskEnvironment) {
-        try {
-            return runCommand(taskEnvironment, config);
-        } catch (Exception e) {
-            return ExecutionResult.failure("Failed to invoke RapidDeploy job on URL: " + config.getValue(RapidDeployPackageTask.URL_PROPERTY) + " \nError message: " + e.getMessage(), e);
-        }
-    }
+	@Override
+	public ExecutionResult execute(final TaskConfig config, final TaskExecutionContext taskEnvironment) {
+		try {
+			return runCommand(taskEnvironment, config);
+		} catch (final Exception e) {
+			return ExecutionResult.failure("Failed to invoke RapidDeploy job on URL: " + config.getValue(RapidDeployPackageTask.URL_PROPERTY)
+					+ " \nError message: " + e.getMessage(), e);
+		}
+	}
 
-    private ExecutionResult runCommand(TaskExecutionContext taskContext, TaskConfig taskConfig) throws Exception {    	
-        String url = taskConfig.getValue(RapidDeployPackageTask.URL_PROPERTY);
-        String token = taskConfig.getValue(RapidDeployPackageTask.TOKEN_PROPERTY);
-        String project = taskConfig.getValue(RapidDeployPackageTask.PROJECT_PROPERTY);        
-    	
-    	Console console = taskContext.console();
-        
-    	console.printLine("Starting RapidDeploy package build with parameters:");
-    	console.printLine("URL: " + url);
-    	console.printLine("Authentication token: ******");
-    	console.printLine("Project name: " + project);    	    	
-    	
-    	String output;
-    	output = RapidDeployConnector.invokeRapidDeployBuildPackage(token, url, project, null, "jar", true);
-    	console.printLine("Package build finished successfully, with output:\n " + output);
-        return ExecutionResult.success("Successfully built RapidDeploy package. Please check the output.");
-    }  
+	private ExecutionResult runCommand(final TaskExecutionContext taskContext, final TaskConfig taskConfig) throws Exception {
+		final String url = taskConfig.getValue(RapidDeployPackageTask.URL_PROPERTY);
+		final String token = taskConfig.getValue(RapidDeployPackageTask.TOKEN_PROPERTY);
+		final String project = taskConfig.getValue(RapidDeployPackageTask.PROJECT_PROPERTY);
+
+		final Console console = taskContext.console();
+
+		console.printLine("Starting RapidDeploy package build with parameters:");
+		console.printLine("URL: " + url);
+		console.printLine("Authentication token: ******");
+		console.printLine("Project name: " + project);
+
+		final String output = RapidDeployConnector.invokeRapidDeployBuildPackage(token, url, project, null, "jar", true, false);
+		console.printLine("Package build finished successfully, with output:\n " + output);
+		return ExecutionResult.success("Successfully built RapidDeploy package. Please check the output.");
+	}
 }

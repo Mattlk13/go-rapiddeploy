@@ -28,24 +28,24 @@ import com.thoughtworks.go.plugin.api.task.TaskExecutor;
 public class RapidDeployJobTaskExecutor implements TaskExecutor {
 
 	@Override
-	public ExecutionResult execute(TaskConfig config, TaskExecutionContext taskEnvironment) {
+	public ExecutionResult execute(final TaskConfig config, final TaskExecutionContext taskEnvironment) {
 		try {
 			return runCommand(taskEnvironment, config);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return ExecutionResult.failure("Failed to invoke RapidDeploy job on URL: " + config.getValue(RapidDeployJobTask.URL_PROPERTY)
 					+ " \nError message: " + e.getMessage(), e);
 		}
 	}
 
-	private ExecutionResult runCommand(TaskExecutionContext taskContext, TaskConfig taskConfig) throws Exception {
-		String url = taskConfig.getValue(RapidDeployJobTask.URL_PROPERTY);
-		String token = taskConfig.getValue(RapidDeployJobTask.TOKEN_PROPERTY);
-		String project = taskConfig.getValue(RapidDeployJobTask.PROJECT_PROPERTY);
-		String environment = taskConfig.getValue(RapidDeployJobTask.ENVIRONMENT_PROPERTY);
-		String packageRepoName = taskConfig.getValue(RapidDeployJobTask.PACKAGE_REPO_PROPERTY);
-		String packageName = taskConfig.getValue(RapidDeployJobTask.PACKAGE_PROPERTY);
+	private ExecutionResult runCommand(final TaskExecutionContext taskContext, final TaskConfig taskConfig) throws Exception {
+		final String url = taskConfig.getValue(RapidDeployJobTask.URL_PROPERTY);
+		final String token = taskConfig.getValue(RapidDeployJobTask.TOKEN_PROPERTY);
+		final String project = taskConfig.getValue(RapidDeployJobTask.PROJECT_PROPERTY);
+		final String environment = taskConfig.getValue(RapidDeployJobTask.ENVIRONMENT_PROPERTY);
+		final String packageRepoName = taskConfig.getValue(RapidDeployJobTask.PACKAGE_REPO_PROPERTY);
+		final String packageName = taskConfig.getValue(RapidDeployJobTask.PACKAGE_PROPERTY);
 
-		Console console = taskContext.console();
+		final Console console = taskContext.console();
 		boolean success = true;
 
 		console.printLine("Starting RapidDeploy job with parameters:");
@@ -56,13 +56,13 @@ public class RapidDeployJobTaskExecutor implements TaskExecutor {
 		console.printLine("Package repository name: " + packageRepoName);
 		console.printLine("Package name: " + packageName);
 
-		String deploymentPackageNameKey = String.format("GO_PACKAGE_%s_LABEL", packageRepoName + ":" + packageName).replaceAll("[^A-Za-z0-9_]", "_")
+		final String deploymentPackageNameKey = String.format("GO_PACKAGE_%s_LABEL", packageRepoName + ":" + packageName).replaceAll("[^A-Za-z0-9_]", "_")
 				.toUpperCase();
 
 		console.printLine("Looking up selected package material artefact in environment variables with key '" + deploymentPackageNameKey + "'");
 
-		Map<String, String> envMap = taskContext.environment().asMap();
-		String deploymentPackageName = envMap.get(deploymentPackageNameKey);
+		final Map<String, String> envMap = taskContext.environment().asMap();
+		final String deploymentPackageName = envMap.get(deploymentPackageNameKey);
 
 		if (deploymentPackageName == null || "".equals(deploymentPackageName)) {
 			return ExecutionResult.failure("Could not find deployment package!\n"
@@ -71,9 +71,9 @@ public class RapidDeployJobTaskExecutor implements TaskExecutor {
 			console.printLine("Found deployment package name: " + deploymentPackageName);
 		}
 
-		String output = RapidDeployConnector.invokeRapidDeployDeploymentPollOutput(token, url, project, environment, deploymentPackageName, false, true);
+		final String output = RapidDeployConnector.invokeRapidDeployDeploymentPollOutput(token, url, project, environment, deploymentPackageName, false, true);
 
-		String jobId = RapidDeployConnector.extractJobId(output);
+		final String jobId = RapidDeployConnector.extractJobId(output);
 		if (jobId != null) {
 			console.printLine("Checking job status every 30 seconds...");
 			boolean runningJob = true;
@@ -81,8 +81,8 @@ public class RapidDeployJobTaskExecutor implements TaskExecutor {
 			long milisToSleep = 30000;
 			while (runningJob) {
 				Thread.sleep(milisToSleep);
-				String jobDetails = RapidDeployConnector.pollRapidDeployJobDetails(token, url, jobId);
-				String jobStatus = RapidDeployConnector.extractJobStatus(jobDetails);
+				final String jobDetails = RapidDeployConnector.pollRapidDeployJobDetails(token, url, jobId);
+				final String jobStatus = RapidDeployConnector.extractJobStatus(jobDetails);
 
 				console.printLine("Job status is " + jobStatus);
 				if (jobStatus.equals("DEPLOYING") || jobStatus.equals("QUEUED") || jobStatus.equals("STARTING") || jobStatus.equals("EXECUTING")) {
@@ -108,8 +108,8 @@ public class RapidDeployJobTaskExecutor implements TaskExecutor {
 		} else {
 			throw new Exception("Could not retrieve job id, running asynchronously!");
 		}
-		console.printLine("");
-		String logs = RapidDeployConnector.pollRapidDeployJobLog(token, url, jobId);
+		console.printLine(System.getProperty("line.separator"));
+		final String logs = RapidDeployConnector.pollRapidDeployJobLog(token, url, jobId);
 		console.printLine(logs);
 
 		if (!success) {
