@@ -17,11 +17,11 @@
 package com.midvision.go.task.packagebuilder;
 
 import com.thoughtworks.go.plugin.api.annotation.Extension;
-import com.thoughtworks.go.plugin.api.config.Property;
 import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
 import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
 import com.thoughtworks.go.plugin.api.task.Task;
 import com.thoughtworks.go.plugin.api.task.TaskConfig;
+import com.thoughtworks.go.plugin.api.task.TaskConfigProperty;
 import com.thoughtworks.go.plugin.api.task.TaskExecutor;
 import com.thoughtworks.go.plugin.api.task.TaskView;
 
@@ -38,7 +38,7 @@ public class RapidDeployPackageTask implements Task {
     public TaskConfig config() {
         TaskConfig config = new TaskConfig();
         config.addProperty(URL_PROPERTY);
-        config.add(new Property(TOKEN_PROPERTY).with(Property.SECURE, true));
+        config.addProperty(TOKEN_PROPERTY).with(TaskConfigProperty.SECURE, true);
         config.addProperty(PROJECT_PROPERTY);
         return config;
     }
