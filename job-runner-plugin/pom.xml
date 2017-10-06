@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>com.midvision.plugins</groupId>
 		<artifactId>go-rapiddeploy</artifactId>
-		<version>1.3</version>
+		<version>1.4-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.midvision.plugins.go</groupId>
 	<artifactId>job-runner-plugin</artifactId>
-	<version>1.3</version>
+	<version>1.4-SNAPSHOT</version>
 </project>
