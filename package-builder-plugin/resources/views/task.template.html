@@ -11,7 +11,6 @@
   </label>
   <input type="password" ng-model="Token" ng-required="true">
   </input>
-  <span class="form_error" ng-show="GOINPUTNAME[Token].$error.token">Incorrect token format.</span>
   <span class="form_error" ng-show="GOINPUTNAME[Token].$error.server">{{ GOINPUTNAME[Token].$error.server }}</span>
 </div>
 <div class="form_item_block">
@@ -19,6 +18,11 @@
   </label>
   <input type="text" ng-model="Project" ng-required="true">
   </input>
-  <span class="form_error" ng-show="GOINPUTNAME[Project].$error.token">Incorrect project name format.</span>
   <span class="form_error" ng-show="GOINPUTNAME[Project].$error.server">{{ GOINPUTNAME[Project].$error.server }}</span>
+</div>
+<div class="form_item_block">
+  <label>Package name:</label>
+  <input type="text" ng-model="Package" ng-required="false">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[Package].$error.server">{{ GOINPUTNAME[Package].$error.server }}</span>
 </div>

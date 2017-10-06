@@ -11,7 +11,6 @@
   </label>
   <input type="password" ng-model="Token" ng-required="true">
   </input>
-  <span class="form_error" ng-show="GOINPUTNAME[Token].$error.token">Incorrect token format.</span>
   <span class="form_error" ng-show="GOINPUTNAME[Token].$error.server">{{ GOINPUTNAME[Token].$error.server }}</span>
 </div>
 <div class="form_item_block">
@@ -19,30 +18,26 @@
   </label>
   <input type="text" ng-model="Project" ng-required="true">
   </input>
-  <span class="form_error" ng-show="GOINPUTNAME[Project].$error.token">Incorrect project name format.</span>
   <span class="form_error" ng-show="GOINPUTNAME[Project].$error.server">{{ GOINPUTNAME[Project].$error.server }}</span>
 </div>
 <div class="form_item_block">
-  <label>Environment name:<span class="asterisk">*</span>
+  <label>Target name:<span class="asterisk">*</span>
   </label>
-  <input type="text" ng-model="Environment" ng-required="true">
+  <input type="text" ng-model="Target" ng-required="true">
   </input>
-  <span class="form_error" ng-show="GOINPUTNAME[Environment].$error.token">Incorrect environment name format.</span>
-  <span class="form_error" ng-show="GOINPUTNAME[Environment].$error.server">{{ GOINPUTNAME[Environment].$error.server }}</span>
+  <span class="form_error" ng-show="GOINPUTNAME[Target].$error.server">{{ GOINPUTNAME[Target].$error.server }}</span>
 </div>
 <div class="form_item_block">
   <label>RapidDeploy package repository name:<span class="asterisk">*</span>
   </label>
   <input type="text" ng-model="PackageRepo" ng-required="true">
   </input>
-  <span class="form_error" ng-show="GOINPUTNAME[Package].$error.token">Incorrect package repository name format.</span>
-  <span class="form_error" ng-show="GOINPUTNAME[Package].$error.server">{{ GOINPUTNAME[Package].$error.server }}</span>
+  <span class="form_error" ng-show="GOINPUTNAME[PackageRepo].$error.server">{{ GOINPUTNAME[Package].$error.server }}</span>
 </div>
 <div class="form_item_block">
-  <label>RapidDeploy package name:<span class="asterisk">*</span>
+  <label>Package name:<span class="asterisk">*</span>
   </label>
   <input type="text" ng-model="Package" ng-required="true">
   </input>
-  <span class="form_error" ng-show="GOINPUTNAME[Package].$error.token">Incorrect package name format.</span>
   <span class="form_error" ng-show="GOINPUTNAME[Package].$error.server">{{ GOINPUTNAME[Package].$error.server }}</span>
 </div>
