@@ -3,16 +3,16 @@ package com.midvision.go.plugin.packagematerial.utils;
 import java.util.Comparator;
 
 /**
- * 
- * 
+ *
+ *
  * Sorts based on "Natural human ordering".
- * </p>
+ *
  * Typically a lexicographic sort would place (in ascending order):
- * </p>
+ *
  * AAA_100, AAA_101, AAA_28, AAA_32
- * </p>
+ *
  * (This) Human sort will place (in ascending order):
- * </p>
+ *
  * AAA_28, AAA_32, AAA_100, AAA_101
  */
 public final class NaturalOrderComparator implements Comparator<Object> {
