@@ -68,7 +68,7 @@ public class RapidDeployRepositoryConfigurationProvider {
 	/** PACKAGE MATERIAL PROPERTIES METHODS **/
 
 	private PackageMaterialProperty serverUrl() {
-		return new PackageMaterialProperty().withDisplayName("Package Identifier").withDisplayOrder("0");
+		return new PackageMaterialProperty().withDisplayName("RapidDeploy URL").withDisplayOrder("0");
 	}
 
 	private PackageMaterialProperty authToken() {
@@ -80,6 +80,6 @@ public class RapidDeployRepositoryConfigurationProvider {
 	}
 
 	private PackageMaterialProperty packageId() {
-		return new PackageMaterialProperty().withDisplayName("Package Identifier").withDisplayOrder("0");
+		return new PackageMaterialProperty().withDisplayName("Package identifier").withDisplayOrder("0");
 	}
 }
