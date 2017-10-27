@@ -1,6 +1,10 @@
 package com.midvision.go.task.jobrunner;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.midvision.rapiddeploy.connector.RapidDeployConnector;
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
@@ -41,8 +45,18 @@ public class RapidDeployJobTaskExecutor {
 				console.printLine("Found deployment package name: " + deploymentPackageName);
 			}
 
+			Map<String, String> dataDictionary = new HashMap<String, String>();
+			for (Entry<String, String> envVar : envMap.entrySet()) {
+				Pattern pattern = Pattern.compile("@@.+@@");
+				Matcher matcher = pattern.matcher(envVar.getKey());
+				if (matcher.matches()) {
+					dataDictionary.put(envVar.getKey(), envVar.getValue());
+				}
+			}
+			console.printLine("Data dictionary: " + dataDictionary);
+
 			final String output = RapidDeployConnector.invokeRapidDeployDeploymentPollOutput(authToken, serverUrl, project, target, deploymentPackageName,
-					false, true);
+					false, true, dataDictionary);
 
 			final String jobId = RapidDeployConnector.extractJobId(output);
 			boolean success = true;

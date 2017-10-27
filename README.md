@@ -10,3 +10,9 @@ Plugins for an integration between _Thoughtworks Go_ and _MidVision RapidDeploy_
 ## Download binaries
 * You can find the packaged plugins [here](http://www.download.midvision.com/content/repositories/Community_release/com/midvision/plugins/go/).
 
+## Data dictionary
+* You can pass data dictionary items to a RapidDeploy deployment by using environment variables in GoCD. These variables keys must be preceded and ended by the "@@" string, for example:
+
+```
+@@echoMessageA@@ = Hello world!
+```
