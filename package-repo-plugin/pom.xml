@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>com.midvision.plugins</groupId>
 		<artifactId>go-rapiddeploy</artifactId>
-		<version>1.4-SNAPSHOT</version>
+		<version>1.4</version>
 	</parent>
 
 	<groupId>com.midvision.plugins.go</groupId>
 	<artifactId>package-repo-plugin</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 </project>
