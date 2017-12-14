@@ -45,12 +45,14 @@ public class RapidDeployJobTaskExecutor {
 				console.printLine("Found deployment package name: " + deploymentPackageName);
 			}
 
-			Map<String, String> dataDictionary = new HashMap<String, String>();
-			for (Entry<String, String> envVar : envMap.entrySet()) {
-				Pattern pattern = Pattern.compile("@@.+@@");
-				Matcher matcher = pattern.matcher(envVar.getKey());
+			final Map<String, String> dataDictionary = new HashMap<String, String>();
+			String dictValue = "";
+			for (final Entry<String, String> envVar : envMap.entrySet()) {
+				final Pattern pattern = Pattern.compile("@@.+@@");
+				final Matcher matcher = pattern.matcher(envVar.getKey());
 				if (matcher.matches()) {
-					dataDictionary.put(envVar.getKey(), envVar.getValue());
+					dictValue = replaceEnviromentVariables(envVar.getValue(), envMap, console);
+					dataDictionary.put(envVar.getKey(), dictValue);
 				}
 			}
 			console.printLine("Data dictionary: " + dataDictionary);
@@ -106,5 +108,44 @@ public class RapidDeployJobTaskExecutor {
 		} catch (final Exception e) {
 			return new Result(false, "Failed to invoke RapidDeploy job on URL: " + config.getServerUrl() + " \nError message: " + e.getMessage(), e);
 		}
+	}
+
+	private String replaceEnviromentVariables(String paramStr, final Map<String, String> envMap, final JobConsoleLogger console) {
+		console.printLine("Replacing environment variables for '" + paramStr + "'");
+
+		// First we need to retrieve all the placeholders: '${xxx}'
+		final Pattern pattern = Pattern.compile("\\$\\{[^\\$\\{\\}]+\\}");
+		// Then we need to extract the string inside the placeholder
+		final Pattern inPattern = Pattern.compile("\\$\\{(.+)\\}");
+
+		String group;
+		String replaceStr;
+		final Matcher matcher = pattern.matcher(paramStr);
+		Matcher inMatcher;
+
+		// We iterate over the placeholders found
+		while (matcher.find()) {
+			group = matcher.group();
+			inMatcher = inPattern.matcher(group);
+			// Obtain the string inside the placeholder
+			if (inMatcher.matches()) {
+				try {
+					// Get the value of the parameter
+					replaceStr = envMap.get(inMatcher.group(1));
+					// If the value is not blank, replace the variable
+					if (replaceStr != null) {
+						console.printLine("    Retrieved value '" + replaceStr + "' from environment variable '" + group + "'");
+						paramStr = paramStr.replace(group, replaceStr);
+					} else {
+						console.printLine("    WARNING: environment variable not found '" + group + "'");
+					}
+				} catch (final Exception e) {
+					console.printLine("WARNING: Unable to retrieve the environment variable '" + group + "'");
+					console.printLine("         " + e.getMessage());
+				}
+			}
+		}
+		console.printLine("Replaced value '" + paramStr + "'");
+		return paramStr;
 	}
 }
