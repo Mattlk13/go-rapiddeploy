@@ -2,7 +2,7 @@
 <go-plugin id="rapiddeploy.job.runner.plugin" version="1">
     <about>
         <name>RapidDeploy Job Runner Task Plugin</name>
-        <version>1.4</version>
+        <version>1.5</version>
         <target-go-version>17.10.0</target-go-version>
         <description>
            Task plugin that supports invoking a job on a remote RapidDeploy server.

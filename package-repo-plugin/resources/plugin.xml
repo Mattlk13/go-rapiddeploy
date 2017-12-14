@@ -2,7 +2,7 @@
 <go-plugin id="RapidDeployRepo" version="1">
     <about>
         <name>RapidDeploy Package Repository Plugin</name>
-        <version>1.4</version>
+        <version>1.5</version>
         <target-go-version>17.10.0</target-go-version>
         <description>
            Package material plugin that supports fetching packages from a remote RapidDeploy server.
